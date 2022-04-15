@@ -1,16 +1,15 @@
-import { Router } from 'express'
-import RepositoryController from '../controller/repositoryController'
+import { celebrate, Segments } from 'celebrate';
+import { Router } from 'express';
+import CreateRepositorySchema from '../../../schemas/CreateRepositorySchema';
+import RepositoryController from '../controller/RepositoryController';
 
 const repositoryRouter = Router()
+const repositoryController = new RepositoryController()
 
-repositoryRouter.get("", RepositoryController.findAll)
-
-repositoryRouter.post("", RepositoryController.create)
-
-repositoryRouter.put("/:id", RepositoryController.update)
-
-repositoryRouter.delete("/:id", RepositoryController.delete)
-
-repositoryRouter.post("/:id/like", RepositoryController.like)
+repositoryRouter.post(
+    '', 
+    [celebrate({ [Segments.BODY]: CreateRepositorySchema }, { abortEarly: false })], 
+    repositoryController.create
+)
 
 export default repositoryRouter

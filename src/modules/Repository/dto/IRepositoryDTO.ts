@@ -1,6 +1,6 @@
 export default interface IRepositoryDTO {
-    id: string,
+    id_repository: string,
     title: string,
     url: string,
-    techs: Array<String>
+    likes?: number
 }

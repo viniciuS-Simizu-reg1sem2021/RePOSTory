@@ -1,53 +1,22 @@
-import { NextFunction, Request, Response } from 'express'
-import { inject, injectable, container } from 'tsyringe'
-
-import RepositoryEntity from "../../../entity/RepositoryEntity";
-import FindAllRepositoryService from '../../../services/FindAllRepositoryService';
+import { Request, Response, NextFunction } from 'express';
+import { injectable, container } from 'tsyringe';
 import CreateRepositoryService from '../../../services/CreateRepositoryService';
-import UpdateRepositoryService from '../../../services/UpdateRepositoryService';
-import DeleteRepositoryService from '../../../services/DeleteRepositoryService';
-import LikeRepositoryService from '../../../services/LikeRepositoryService';
+import { v4 as uuid } from 'uuid'
 
 @injectable()
 export default class RepositoryController {
-    public async findAll(request: Request, response: Response, next: NextFunction): Promise<RepositoryEntity> {
-        try {
-            const service = container.resolve(FindAllRepositoryService)
-            
-        } catch(e) {
-            next(e)
-        }
-    }
-
-    async create(request: Request, response: Response, next: NextFunction): Promise<void> {
+    
+    async create(request: Request, response: Response, next: NextFunction) {
         try {
             const service = container.resolve(CreateRepositoryService)
-        } catch(e) {
+
+            let body = request.body
+            body.id_repository = uuid()
+            
+            response.json(await service.execute(body))
+        } catch (e) {
             next(e)
         }
     }
 
-    async update(request: Request, response: Response, next: NextFunction): Promise<void> {
-        try {
-            const service = container.resolve(UpdateRepositoryService)
-        } catch(e) {
-            next(e)
-        }
-    }
-
-    async delete(request: Request, response: Response, next: NextFunction): Promise<void> {
-        try {
-            const service = container.resolve(DeleteRepositoryService)
-        } catch(e) {
-            next(e)
-        }
-    }
-
-    async like(request: Request, response: Response, next: NextFunction): Promise<RepositoryEntity> {
-        try {
-            const service = container.resolve(LikeRepositoryService)
-        } catch(e) {
-            next(e)
-        }
-    }
 }
