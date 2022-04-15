@@ -3,13 +3,18 @@
   "version": "1.0.0",
   "main": "src/server.js",
   "license": "MIT",
+  "type": "module",
   "scripts": {
     "dev": "nodemon",
     "test": "jest"
   },
   "dependencies": {
+    "celebrate": "^15.0.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "mysql": "~2.15.0",
+    "tsyringe": "^4.6.0",
+    "typeorm": "^0.3.6",
     "uuid": "^8.3.0"
   },
   "devDependencies": {
