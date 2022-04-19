@@ -7,7 +7,7 @@ export default class RepositoryEntity implements IRepositoryDTO {
     @PrimaryColumn({ name: 'id_repository' })
     id_repository: string;
 
-    @Column({ name: 'title' })
+    @Column({ name: 'title', unique: true })
     title: string;
 
     @Column({ name: 'url' })
@@ -16,6 +16,6 @@ export default class RepositoryEntity implements IRepositoryDTO {
     @Column({ name: 'likes', default: 0 })
     likes?: number;
 
-    @OneToMany(() => TechEntity, techs => techs.id_repository)
-    techs?: TechEntity[]
+    @OneToMany(() => TechEntity, techs => techs.id_repository, { cascade: true, })
+    techs: TechEntity[]
 }

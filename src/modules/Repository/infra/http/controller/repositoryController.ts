@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { injectable, container } from 'tsyringe';
 import CreateRepositoryService from '../../../services/CreateRepositoryService';
+import CreateTechService from '../../../../Tech/services/CreateTechService'
 import { v4 as uuid } from 'uuid'
 import DeleteRepositoryService from '../../../services/DeleteRepositoryService';
 import ListRepositoryService from '../../../services/ListRepositoryService';
@@ -11,12 +12,33 @@ export default class RepositoryController {
     
     async create(request: Request, response: Response, next: NextFunction) {
         try {
-            const service = container.resolve(CreateRepositoryService)
+            const createRepositoryService = container.resolve(CreateRepositoryService)
 
             let body = request.body
             body.id_repository = uuid()
-            
-            response.json(await service.execute(body))
+
+            const techs = body.techs ? body.techs : undefined
+            delete body.techs
+
+            await createRepositoryService.execute(body)
+
+            if(techs?.length) {
+                const techService = container.resolve(CreateTechService)
+
+                techs.forEach(async tech => {
+                    await techService.execute({ id_repository: body.id_repository, tech: tech })
+                        .then(() => console.log(`${body.id_repository}: Tech ${tech} inserida`))
+
+                        .catch(async e => {
+                            const deleteRepositoryService = container.resolve(DeleteRepositoryService)
+
+                            await deleteRepositoryService.execute(body.id_repository)
+                            console.log(`${body.id_repository}: Error on tech ${tech}: ${e}`)
+                        })
+                })
+            }
+
+            response.send('Repository created')
         } catch (e) {
             next(e)
         }

@@ -9,4 +9,8 @@ export default class RepositoryRepository extends BaseRepository<IRepositoryDTO,
     
     constructor() { super(RepositoryEntity) }
 
+    async list(): Promise<RepositoryEntity[]> {
+        return await this.repository.find({ relations: ['techs'] })
+    }
+
 }
