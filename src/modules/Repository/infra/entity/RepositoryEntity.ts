@@ -1,6 +1,6 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
-import { v4 as uuid } from 'uuid'
+import { Column, Entity, PrimaryColumn, OneToMany } from 'typeorm';
 import IRepositoryDTO from '../../dto/IRepositoryDTO';
+import TechEntity from '../../../Tech/infra/entity/TechEntity';
 
 @Entity('repository')
 export default class RepositoryEntity implements IRepositoryDTO {
@@ -15,4 +15,7 @@ export default class RepositoryEntity implements IRepositoryDTO {
 
     @Column({ name: 'likes', default: 0 })
     likes?: number;
+
+    @OneToMany(() => TechEntity, techs => techs.id_repository)
+    techs?: TechEntity[]
 }
