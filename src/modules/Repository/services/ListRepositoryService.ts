@@ -7,7 +7,7 @@ export default class ListRepositoryService {
 
     constructor(@inject(RepositoryRepository) private repository: RepositoryRepository) {}
 
-    async execute(): Promise<RepositoryEntity[] | undefined> {
+    async execute(): Promise<RepositoryEntity[] | null> {
         return await this.repository.list()
     }
 

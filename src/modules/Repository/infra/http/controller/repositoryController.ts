@@ -12,33 +12,39 @@ export default class RepositoryController {
     
     async create(request: Request, response: Response, next: NextFunction) {
         try {
+
             const createRepositoryService = container.resolve(CreateRepositoryService)
 
-            let body = request.body
+            const body = request.body
             body.id_repository = uuid()
 
-            const techs = body.techs ? body.techs : undefined
+            const techs = body.techs
             delete body.techs
 
             await createRepositoryService.execute(body)
 
+            // Verify if body has techs and if is filled
             if(techs?.length) {
+
+                // Create each tech in array techs
                 const techService = container.resolve(CreateTechService)
 
                 techs.forEach(async tech => {
                     await techService.execute({ id_repository: body.id_repository, tech: tech })
-                        .then(() => console.log(`${body.id_repository}: Tech ${tech} inserida`))
+                        .then(() => console.log(`${body.title}: Tech "${tech}" inserida`))
 
+                        // If Create Query Error, delete the entire repository and yours techs
                         .catch(async e => {
                             const deleteRepositoryService = container.resolve(DeleteRepositoryService)
 
                             await deleteRepositoryService.execute(body.id_repository)
-                            console.log(`${body.id_repository}: Error on tech ${tech}: ${e}`)
+                            throw new Error(`${body.title}: Error on tech ${tech}: ${e}`)
                         })
                 })
             }
 
-            response.send('Repository created')
+            response.status(200).json({ ...body, techs: techs })
+
         } catch (e) {
             next(e)
         }
@@ -49,9 +55,15 @@ export default class RepositoryController {
             const service = container.resolve(DeleteRepositoryService)
 
             const id = request.params.id
+
+            const execResult = await service.execute(id)
+
+            if(!execResult.affected) {
+                response.status(406).send('Repository not found')
+            }
+
+            response.status(200).json(execResult)
             
-            await service.execute(id)
-            response.send('Repositório deletado com sucesso')
         } catch(e) {
             next(e)
         }
@@ -61,7 +73,7 @@ export default class RepositoryController {
         try {
             const service = container.resolve(ListRepositoryService)
             
-            response.json(await service.execute())
+            response.status(200).json(await service.execute())
         } catch(e) {
             next(e)
         }
@@ -75,11 +87,11 @@ export default class RepositoryController {
             const id = request.params.id
 
             const result = await service.execute(body, id)
-            if(result.affected != 1) {
-                throw new Error()
+            if(!result.affected) {
+                response.status(406).send('Repository not found to update')
             }
 
-            response.send('Repositório atualizado com sucesso')
+            response.status(200).json(result)
         } catch(e) {
             next(e)
         }

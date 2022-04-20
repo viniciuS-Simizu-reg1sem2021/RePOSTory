@@ -1,4 +1,4 @@
-import { DeepPartial, UpdateResult } from "typeorm"
+import { DeepPartial, DeleteResult, UpdateResult } from "typeorm"
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity"
 
 export default interface IBaseRepository<DTO, Entity> {
@@ -7,8 +7,8 @@ export default interface IBaseRepository<DTO, Entity> {
 
     update(data: QueryDeepPartialEntity<Entity>, id: string): Promise<UpdateResult>
 
-    delete(id: string): Promise<void>
+    delete(id: string): Promise<DeleteResult>
 
-    list(): Promise<Entity[] | undefined>
+    list(): Promise<Entity[] | null>
 
 }

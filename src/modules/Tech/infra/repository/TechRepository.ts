@@ -1,4 +1,5 @@
 import { injectable } from "tsyringe";
+import { DeleteResult } from "typeorm";
 import BaseRepository from "../../../../shared/infra/Repository/BaseRepository";
 import ITechDTO from "../../dto/ITechDTO";
 import TechEntity from "../entity/TechEntity";
@@ -8,13 +9,13 @@ export default class TechRepository extends BaseRepository<ITechDTO, TechEntity>
 
     constructor() { super(TechEntity) }
 
-    async deleteByIdAndTech(id_repository: string, tech: string): Promise<void> {
+    async deleteByIdAndTech(data: ITechDTO): Promise<DeleteResult> {
 
-        await this.repository.createQueryBuilder()
+        return await this.repository.createQueryBuilder()
             .delete()
             .from(TechEntity)
-            .where("id_repository = :id_repository", { id_repository: id_repository })
-            .andWhere("tech = :tech", { tech: tech })
+            .where("id_repository = :id_repository", { id_repository: data.id_repository })
+            .andWhere("tech = :tech", { tech: data.tech })
             .execute()
 
     }

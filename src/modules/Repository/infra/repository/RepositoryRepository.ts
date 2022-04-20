@@ -13,4 +13,8 @@ export default class RepositoryRepository extends BaseRepository<IRepositoryDTO,
         return await this.repository.find({ relations: ['techs'] })
     }
 
+    async find(id_repository: string): Promise<RepositoryEntity | undefined> {
+        return await this.repository.findOne(id_repository, { relations: ['techs'] })
+    }
+
 }
