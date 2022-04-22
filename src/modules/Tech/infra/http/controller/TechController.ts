@@ -16,18 +16,16 @@ export default class TechController {
             const body = request.body
 
             const repository = await repositoryService.execute(body.id_repository)
-            console.log(repository.techs) // FIXME
-            if(repository.techs.includes(body.tech)) {
-                response.status(406).send('Tech already exist')
+
+            if(!repository) {
+                response.status(406).send('Repository not found')
             }
 
-            const techCreated = await techService.execute(body)
+            repository.techs.forEach(arrayTech => {
+                arrayTech.tech.includes(body.tech) || response.status(406).send('Tech already exist')
+            })
 
-            if(!techCreated) {
-                throw new Error('Create Query Failed')
-            }
-
-            response.status(200).json(techCreated)
+            response.status(200).json(await techService.execute(body))
 
         } catch (e) {
             next(e)
@@ -37,12 +35,16 @@ export default class TechController {
     async delete(request: Request, response: Response, next: NextFunction) {
         try {
             
-            const service = container.resolve(DeleteTechService)
+            const techService = container.resolve(DeleteTechService)
+            const repositoryService = container.resolve(FindRepositoryService)
 
-            const execStatus = await service.execute(request.body)
+            const body = request.body
 
+            await repositoryService.execute(body.id_repository) ?? response.status(406).send('Repository not found')
+
+            const execStatus = await techService.execute(body)
             if(!execStatus.affected) {
-                response.status(406).send('Repository not found')
+                response.status(406).send('Tech not created')
             }
 
             response.status(200).json(execStatus)

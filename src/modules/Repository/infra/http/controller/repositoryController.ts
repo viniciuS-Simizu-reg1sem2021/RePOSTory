@@ -6,6 +6,7 @@ import { v4 as uuid } from 'uuid'
 import DeleteRepositoryService from '../../../services/DeleteRepositoryService';
 import ListRepositoryService from '../../../services/ListRepositoryService';
 import UpdateRepositoryService from '../../../services/UpdateRepositoryService';
+import FindRepositoryService from '../../../services/FindRepositoryService';
 
 @injectable()
 export default class RepositoryController {
@@ -21,7 +22,12 @@ export default class RepositoryController {
             const techs = body.techs
             delete body.techs
 
-            await createRepositoryService.execute(body)
+            try {
+                await createRepositoryService.execute(body)  
+            } catch(e) {
+                response.status(406).send('Title already used')
+                throw new Error(e)
+            }
 
             // Verify if body has techs and if is filled
             if(techs?.length) {
@@ -58,11 +64,7 @@ export default class RepositoryController {
 
             const execResult = await service.execute(id)
 
-            if(!execResult.affected) {
-                response.status(406).send('Repository not found')
-            }
-
-            response.status(200).json(execResult)
+            execResult.affected ? response.status(200).json(execResult) : response.status(406).send('Repository not found')
             
         } catch(e) {
             next(e)
@@ -87,12 +89,23 @@ export default class RepositoryController {
             const id = request.params.id
 
             const result = await service.execute(body, id)
-            if(!result.affected) {
-                response.status(406).send('Repository not found to update')
-            }
 
-            response.status(200).json(result)
+            result.affected ? response.status(200).json(result) : response.status(406).send('Repository not found to update')
         } catch(e) {
+            next(e)
+        }
+    }
+
+    async find(request: Request, response: Response, next: NextFunction) {
+        try {
+
+            const service = container.resolve(FindRepositoryService)
+
+            const repository = service.execute(request.params.id)
+
+            repository ? response.status(200).json(repository) : response.status(406).send('Repository not found')
+        
+        } catch (e) {
             next(e)
         }
     }

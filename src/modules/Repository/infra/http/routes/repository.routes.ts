@@ -23,6 +23,11 @@ repositoryRouter.get(
     repositoryController.list
 )
 
+repositoryRouter.get(
+    '/:id',
+    repositoryController.find
+)
+
 repositoryRouter.put(
     '/:id',
     [celebrate({ [Segments.BODY]: UpdateRepositorySchema }, { abortEarly: false })],
