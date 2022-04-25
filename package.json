@@ -15,6 +15,7 @@
     "email-validator": "^2.0.4",
     "express": "^4.17.1",
     "filter-anything": "^3.0.3",
+    "js-model-mapper": "^1.0.0",
     "mysql": "^2.18.1",
     "tsyringe": "^4.6.0",
     "typeorm": "^0.2.45",

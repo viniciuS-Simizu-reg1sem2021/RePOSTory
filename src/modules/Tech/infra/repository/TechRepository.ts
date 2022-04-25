@@ -1,15 +1,15 @@
 import { injectable } from "tsyringe";
 import { DeleteResult } from "typeorm";
 import BaseRepository from "../../../../shared/infra/Repository/BaseRepository";
-import ITechDTO from "../../dto/ITechDTO";
+import ITechEntity from "../entity/ITechEntity";
 import TechEntity from "../entity/TechEntity";
 
 @injectable()
-export default class TechRepository extends BaseRepository<ITechDTO, TechEntity> {
+export default class TechRepository extends BaseRepository<TechEntity> {
 
     constructor() { super(TechEntity) }
 
-    async deleteByIdAndTech(data: ITechDTO): Promise<DeleteResult> {
+    async deleteByIdAndTech(data: ITechEntity): Promise<DeleteResult> {
 
         return await this.repository.createQueryBuilder()
             .delete()

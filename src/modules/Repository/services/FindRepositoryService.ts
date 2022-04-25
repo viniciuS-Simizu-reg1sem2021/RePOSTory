@@ -1,6 +1,4 @@
 import { inject, injectable } from "tsyringe";
-import { DeepPartial } from "typeorm";
-import IRepositoryDTO from "../dto/IRepositoryDTO";
 import RepositoryEntity from "../infra/entity/RepositoryEntity";
 import RepositoryRepository from "../infra/repository/RepositoryRepository";
 

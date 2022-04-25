@@ -1,10 +1,10 @@
 import { injectable } from "tsyringe";
 import BaseRepository from "../../../../shared/infra/Repository/BaseRepository";
-import IUserDTO from "../../dto/IUserDTO";
+import IUserDTO from "../../dto/UserDTO";
 import UserEntity from "../entity/UserEntity";
 
 @injectable()
-export default class UserRepository extends BaseRepository<IUserDTO, UserEntity> {
+export default class UserRepository extends BaseRepository<UserEntity> {
 
     constructor() { super(UserEntity) }
 

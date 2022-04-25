@@ -1,10 +1,10 @@
 import { Column, Entity, PrimaryColumn, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
-import IRepositoryDTO from '../../dto/IRepositoryDTO';
 import TechEntity from '../../../Tech/infra/entity/TechEntity';
 import UserEntity from '../../../User/infra/entity/UserEntity';
+import IRepositoryEntity from './IRepositoryEntity';
 
 @Entity('repository')
-export default class RepositoryEntity implements IRepositoryDTO {
+export default class RepositoryEntity implements IRepositoryEntity {
     @PrimaryColumn({ name: 'id_repository' })
     id_repository: string;
 

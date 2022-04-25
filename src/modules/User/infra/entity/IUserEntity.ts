@@ -1,6 +1,6 @@
-import RepositoryEntity from "../../Repository/infra/entity/RepositoryEntity";
+import RepositoryEntity from "../../../Repository/infra/entity/RepositoryEntity";
 
-export default interface IUserDTO {
+export default interface IUserEntity {
     id_user: string,
     username: string,
     email: string,

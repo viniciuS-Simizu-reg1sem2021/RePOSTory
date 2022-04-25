@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { container, injectable } from "tsyringe";
 import { v4 as uuid } from 'uuid'
+import RepositoryDTO from '../../../../Repository/dto/RepositoryDTO';
+import UserDTO from '../../../dto/UserDTO';
 import CreateUserService from '../../../services/CreateUserService';
 import FindByIdUserService from '../../../services/FindByIdUserService';
 import FindByUsernameOrEmailUserService from '../../../services/FindByUsernameOrEmailUserService';
@@ -85,7 +87,8 @@ export default class UserController {
 
             validator.validate(usernameOrEmail) ? account.email = usernameOrEmail : account.username = usernameOrEmail
 
-            const user = await service.execute(account)
+            const user = UserDTO(await service.execute(account))
+            user.repositories.forEach( (repository, i, arr) => arr[i] = RepositoryDTO(repository) )
             user ? response.status(200).json(user) : response.status(406).send(handleError('user not found'))
             
 
@@ -101,7 +104,8 @@ export default class UserController {
             
             const service = container.resolve(FindByIdUserService)
 
-            const user = await service.execute(request.params.id)
+            const user = UserDTO(await service.execute(request.params.id))
+            user.repositories.forEach( (repository, i, arr) => arr[i] = RepositoryDTO(repository) )
             user ? response.status(200).json(user) : response.status(406).send(handleError('user not found'))
 
         } catch (e) {

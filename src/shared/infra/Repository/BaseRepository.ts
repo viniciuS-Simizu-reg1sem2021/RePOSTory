@@ -2,7 +2,7 @@ import { DeepPartial, DeleteResult, EntityTarget, getRepository, Repository, Upd
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 import IBaseRepository from "./IBaseRepository";
 
-export default abstract class BaseRepository<DTO, Entity> implements IBaseRepository<DTO, Entity> {
+export default abstract class BaseRepository<Entity> implements IBaseRepository<Entity> {
     
     protected repository: Repository<Entity>
 

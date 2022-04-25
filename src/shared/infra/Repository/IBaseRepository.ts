@@ -1,7 +1,7 @@
 import { DeepPartial, DeleteResult, UpdateResult } from "typeorm"
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity"
 
-export default interface IBaseRepository<DTO, Entity> {
+export default interface IBaseRepository<Entity> {
 
     create(data: DeepPartial<Entity>): Promise<Entity>
 

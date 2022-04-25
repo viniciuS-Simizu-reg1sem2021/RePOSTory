@@ -1,9 +1,9 @@
 import { Column, PrimaryColumn, OneToMany, Entity } from 'typeorm';
 import RepositoryEntity from "../../../Repository/infra/entity/RepositoryEntity";
-import IUserDTO from "../../dto/IUserDTO";
+import IUserEntity from './IUserEntity';
 
 @Entity('user')
-export default class UserEntity implements IUserDTO {
+export default class UserEntity implements IUserEntity {
 
     @PrimaryColumn({ name: 'id_user' })
     id_user: string;

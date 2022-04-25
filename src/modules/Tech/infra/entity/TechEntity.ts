@@ -1,9 +1,9 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
-import ITechDTO from "../../dto/ITechDTO";
 import RepositoryEntity from '../../../Repository/infra/entity/RepositoryEntity';
+import ITechEntity from './ITechEntity';
 
 @Entity('tech')
-export default class TechEntity implements ITechDTO {
+export default class TechEntity implements ITechEntity {
 
     @PrimaryGeneratedColumn('increment')
     id_tech?: number

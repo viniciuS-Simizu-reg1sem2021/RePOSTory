@@ -9,6 +9,7 @@ import FindRepositoryService from '../../../services/FindRepositoryService';
 import FindByIdUserService from '../../../../User/services/FindByIdUserService';
 
 import { v4 as uuid } from 'uuid'
+import RepositoryDTO from '../../../dto/RepositoryDTO';
 
 @injectable()
 export default class RepositoryController {
@@ -81,8 +82,13 @@ export default class RepositoryController {
     async list(request: Request, response: Response, next: NextFunction) {
         try {
             const service = container.resolve(ListRepositoryService)
+
+            const repositories = await service.execute()
+            repositories.forEach((repository, i, arr) => {
+                arr[i] = RepositoryDTO(repository)
+            })
             
-            response.status(200).json(await service.execute())
+            response.status(200).json(repositories)
         } catch(e) {
             next(e)
         }
@@ -108,7 +114,7 @@ export default class RepositoryController {
 
             const service = container.resolve(FindRepositoryService)
 
-            const repository = await service.execute(request.params.id)
+            const repository = RepositoryDTO(await service.execute(request.params.id))
 
             repository ? response.status(200).json(repository) : response.status(406).send('Repository not found')
         
