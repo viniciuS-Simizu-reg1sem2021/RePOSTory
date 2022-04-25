@@ -1,6 +1,7 @@
-import { Column, Entity, PrimaryColumn, OneToMany } from 'typeorm';
+import { Column, Entity, PrimaryColumn, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import IRepositoryDTO from '../../dto/IRepositoryDTO';
 import TechEntity from '../../../Tech/infra/entity/TechEntity';
+import UserEntity from '../../../User/infra/entity/UserEntity';
 
 @Entity('repository')
 export default class RepositoryEntity implements IRepositoryDTO {
@@ -14,8 +15,12 @@ export default class RepositoryEntity implements IRepositoryDTO {
     url: string;
 
     @Column({ name: 'likes', default: 0 })
-    likes?: number;
+    likes: number;
 
     @OneToMany(() => TechEntity, techs => techs.id_repository, { cascade: true, })
     techs: TechEntity[]
+
+    @ManyToOne(() => UserEntity, user => user.repositories)
+    @JoinColumn({ name: 'id_user' })
+    user: UserEntity
 }

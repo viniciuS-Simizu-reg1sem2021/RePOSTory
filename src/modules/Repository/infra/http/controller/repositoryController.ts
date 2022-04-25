@@ -2,11 +2,13 @@ import { Request, Response, NextFunction } from 'express';
 import { injectable, container } from 'tsyringe';
 import CreateRepositoryService from '../../../services/CreateRepositoryService';
 import CreateTechService from '../../../../Tech/services/CreateTechService'
-import { v4 as uuid } from 'uuid'
 import DeleteRepositoryService from '../../../services/DeleteRepositoryService';
 import ListRepositoryService from '../../../services/ListRepositoryService';
 import UpdateRepositoryService from '../../../services/UpdateRepositoryService';
 import FindRepositoryService from '../../../services/FindRepositoryService';
+import FindByIdUserService from '../../../../User/services/FindByIdUserService';
+
+import { v4 as uuid } from 'uuid'
 
 @injectable()
 export default class RepositoryController {
@@ -15,8 +17,13 @@ export default class RepositoryController {
         try {
 
             const createRepositoryService = container.resolve(CreateRepositoryService)
+            const findUserService = container.resolve(FindByIdUserService)
 
             const body = request.body
+
+            let user = await findUserService.execute(body.id_user)
+            user || response.status(406).send('User not found')
+
             body.id_repository = uuid()
 
             const techs = body.techs
@@ -101,7 +108,7 @@ export default class RepositoryController {
 
             const service = container.resolve(FindRepositoryService)
 
-            const repository = service.execute(request.params.id)
+            const repository = await service.execute(request.params.id)
 
             repository ? response.status(200).json(repository) : response.status(406).send('Repository not found')
         
